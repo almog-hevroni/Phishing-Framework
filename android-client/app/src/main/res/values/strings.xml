@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Phishing Framework</string>
+    <string name="accessibility_service_description">
+    Phishing demo service for BankApp
+</string>
+
 </resources>
