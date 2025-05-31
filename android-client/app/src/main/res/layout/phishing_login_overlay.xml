@@ -5,7 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="#CCFFFFFF">
+    android:background="#CCFFFFFF"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:descendantFocusability="beforeDescendants"
+    android:clickable="true">
 
     <TextView
         android:id="@+id/overlay_title"
@@ -21,7 +25,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Username"
-        android:inputType="text"/>
+        android:inputType="text"
+        android:focusableInTouchMode="true"/>
 
     <EditText
         android:id="@+id/password_field"
@@ -29,7 +34,18 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:hint="Password"
-        android:inputType="textPassword"/>
+        android:inputType="textPassword"
+        android:focusableInTouchMode="true"/>
+
+    <!-- הוספת שדה OTP -->
+    <EditText
+        android:id="@+id/otp_field"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:hint="OTP"
+        android:inputType="number"
+        android:focusableInTouchMode="true"/>
 
     <Button
         android:id="@+id/login_button"

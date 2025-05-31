@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- בוחרים לאפשר בקשות cleartext רק ל-192.168.1.28 -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="false">192.168.1.28</domain>
+    </domain-config>
+    <!-- כדי שאפליקציה תוכל לשלוח בקשות HTTP לכתובת זו -->
+</network-security-config>
