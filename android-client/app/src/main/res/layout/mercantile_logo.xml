@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal">
+
+    <!-- טקסט מרכנתיל -->
+    <TextView
+        android:id="@+id/logo_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="מרכנתיל"
+        android:textColor="#1ABC9C"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:fontFamily="sans-serif" />
+
+    <!-- הקו המחויך -->
+    <ImageView
+        android:layout_width="100dp"
+        android:layout_height="20dp"
+        android:src="@drawable/logo_curve"
+        android:layout_marginTop="-8dp"
+        android:scaleType="fitXY" />
+
+</LinearLayout>

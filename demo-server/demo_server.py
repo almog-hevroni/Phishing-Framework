@@ -28,15 +28,15 @@ def receive_credentials():
     if not data:
         return jsonify({"error": "No JSON payload received"}), 400
 
-    username = data.get("username")
+    id_number = data.get("id")
     password = data.get("password")
-    otp = data.get("otp", None)  # אם אין שדה 'otp', יחזור None
+    code_value = data.get("code", None)  # אם אין שדה 'otp', יחזור None
 
-    if not username or not password:
-        return jsonify({"error": "Missing 'username' or 'password'"}), 400
+    if not id_number or not password:
+        return jsonify({"error": "Missing 'id' or 'password'"}), 400
 
     # הדפסת הערכים לקונסול לצורך בדיקה
-    print(f"[Demo-Server] Received credentials → Username: {username}, Password: {password}, OTP: {otp}")
+    print(f"[Demo-Server] Received credentials → ID: {id_number}, Password: {password}, Code: {code_value}")
 
     return jsonify({"status": "success", "message": "Credentials received"}), 200
 

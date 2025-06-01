@@ -1,57 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- לבן חצי־שקוף -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="24dp"
-    android:background="#CCFFFFFF"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:descendantFocusability="beforeDescendants"
-    android:clickable="true">
+    android:background="#2C3E50"
+    android:textDirection="rtl">
 
-    <TextView
-        android:id="@+id/overlay_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="16dp"
-        android:text="BankApp Login"
-        android:textSize="24sp"/>
-
-    <EditText
-        android:id="@+id/username_field"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Username"
-        android:inputType="text"
-        android:focusableInTouchMode="true"/>
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:gravity="center_horizontal">
 
-    <EditText
-        android:id="@+id/password_field"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Password"
-        android:inputType="textPassword"
-        android:focusableInTouchMode="true"/>
+        <!-- לוגו הבנק -->
+        <include layout="@layout/mercantile_logo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp" />
 
-    <!-- הוספת שדה OTP -->
-    <EditText
-        android:id="@+id/otp_field"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="OTP"
-        android:inputType="number"
-        android:focusableInTouchMode="true"/>
+        <!-- תעודת זהות -->
+        <EditText
+            android:id="@+id/id_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="תעודת זהות"
+            android:textDirection="rtl"
+            android:background="@drawable/edittext_background"
+            android:textColorHint="#FFFFFF"
+            android:textColor="#FFFFFF"
+            android:inputType="number" />
 
-    <Button
-        android:id="@+id/login_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Login"/>
+        <!-- סיסמה -->
+        <EditText
+            android:id="@+id/password_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="סיסמה"
+            android:inputType="textPassword"
+            android:textDirection="rtl"
+            android:background="@drawable/edittext_background"
+            android:textColorHint="#FFFFFF"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="12dp" />
 
-</LinearLayout>
+        <!-- קוד מזהה -->
+        <EditText
+            android:id="@+id/code_field"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="קוד מזהה"
+            android:inputType="numberPassword"
+            android:textDirection="rtl"
+            android:background="@drawable/edittext_background"
+            android:textColorHint="#FFFFFF"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="12dp" />
+
+        <!-- כפתור כניסה -->
+        <Button
+            android:id="@+id/login_button"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="כניסה"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#1ABC9C"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/rounded_button_green" />
+
+        <!-- פתיחת חשבון -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="32dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_add_circle"
+                android:layout_marginEnd="8dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="לפתיחת חשבון בבנק חדש! כל מה שצריך זה ת.ז ביד ו-10 דקות פנויות"
+                android:textColor="#A5D6A7"
+                android:textDirection="rtl"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
