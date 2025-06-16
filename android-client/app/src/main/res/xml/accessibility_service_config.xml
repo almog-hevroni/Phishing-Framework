@@ -1,9 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+<!--
+  קובץ תצורת שירות הנגישות:
+  - תיאור השירות שיוצג במסך הגדרות הנגישות (@string/accessibility_service_description)
+  - אירועי נגישות: שינוי מצב חלון, לחיצה ושינוי פוקוס ב-View (typeWindowStateChanged|typeViewClicked|typeViewFocused)
+  - סוג המשוב: feedbackGeneric
+  - השהיית אירועים: notificationTimeout = 100ms
+  - יכולת קריאת תכולת החלון: canRetrieveWindowContent = true
+  - בקשת סינון KeyEvents: canRequestFilterKeyEvents = true
+  - דגלי נגישות: flagRequestFilterKeyEvents | flagDefault
+-->
+<accessibility-service
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:description="@string/accessibility_service_description"
     android:accessibilityEventTypes="typeWindowStateChanged|typeViewClicked|typeViewFocused"
     android:accessibilityFeedbackType="feedbackGeneric"
     android:notificationTimeout="100"
     android:canRetrieveWindowContent="true"
     android:canRequestFilterKeyEvents="true"
-    android:accessibilityFlags="flagRequestFilterKeyEvents|flagDefault"/>
+    android:accessibilityFlags="flagRequestFilterKeyEvents|flagDefault" />
+
+    <!--
+      תהליך הרישום בשירות הנגישות:
+      1. כשהמשתמש נכנס להגדרות → נגישות, הוא יראה את תיאור השירות שכתבת ב־android:description.
+      2. לאחר הפעלת השירות, מערכת האנדרואיד נותנת לכם callbacks של onAccessibilityEvent() רק עבור האירועים שציינתם.
+      3. אתם יכולים לגשת למבנה החלון (getRootInActiveWindow()) ולבצע לוגיקה כמו זיהוי פתיחת האפליקציה, הצגת overlay ועוד.
+      4. אם ביקשתם סינון KeyEvents, האירועים יגיעו גם ל־onKeyEvent() לפני האפליקציה, לפי דגלי ה־flags.
+    -->

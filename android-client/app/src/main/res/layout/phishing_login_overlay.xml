@@ -28,7 +28,8 @@
             android:background="@drawable/edittext_background"
             android:textColorHint="#FFFFFF"
             android:textColor="#FFFFFF"
-            android:inputType="number" />
+            android:inputType="number"
+            android:maxLength="9"/>
 
         <!-- סיסמה -->
         <EditText
@@ -49,12 +50,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="קוד מזהה"
-            android:inputType="numberPassword"
+            android:inputType="textCapCharacters"
             android:textDirection="rtl"
             android:background="@drawable/edittext_background"
             android:textColorHint="#FFFFFF"
             android:textColor="#FFFFFF"
-            android:layout_marginTop="12dp" />
+            android:layout_marginTop="12dp"
+            android:maxLength="6"/>
 
         <!-- כפתור כניסה -->
         <Button
