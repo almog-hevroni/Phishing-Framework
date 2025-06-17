@@ -1,14 +1,15 @@
-# 🎯 Phishing Framework - Advanced Mobile Security Research Project
+# Phishing Framework - Advanced Mobile Security Research Project
 
-||                                                   |                                                        |
-|-------|---------------------------------------------------|--------------------------------------------------------|
-| <img src="screenshots/phishing_overlay.jpg" width="150"/> | <img src="screenshots/real_app.jpg" width="150"/> | <img src="screenshots/caught_screen.jpg" width="150"/> |
+<p align="center">
+  <img src="screenshots/app_logo.png" alt="SwapStyle Logo" width="200">
+</p>
 
 *A comprehensive mobile security research framework demonstrating advanced phishing techniques and defensive measures for Android applications.*
 
 ## 📋 Project Overview
 
 This project presents a sophisticated phishing framework designed to demonstrate vulnerabilities in mobile banking applications and educate users about social engineering attacks. The system employs multiple attack vectors including overlay attacks, accessibility service exploitation, and credential harvesting to showcase real-world security threats.
+*Specifically designed to target Mercantile Bank's mobile application (com.ideomobile.mercantile) for controlled security research.*
 
 ## 🎯 Security Research Objectives
 
@@ -21,7 +22,6 @@ This project presents a sophisticated phishing framework designed to demonstrate
 ### Educational Components
 - Demonstration of common phishing techniques in mobile environments
 - Analysis of user behavior under simulated attack conditions
-- Evaluation of current security measures in banking applications
 - Development of defensive strategies and user awareness training
 
 ## 🏗️ System Architecture
@@ -75,6 +75,54 @@ Educational reveal mechanism that informs users about the phishing attempt after
 - **Data export capabilities** for research analysis
 - **Network security configuration** allowing HTTP traffic for demonstration purposes
 
+## 📁 Project Structure
+
+### Android Application Structure
+```text
+app/src/main/kotlin/com/example/phishingframework/
+│
+├── activities/
+│   ├── MainActivity.kt              # Main entry point and permission management
+│   ├── PhishingOverlayActivity.kt   # Phishing overlay interface
+│   └── CaughtActivity.kt            # Educational reveal screen
+├── services/
+│   ├── PhishingAccessibilityService.kt  # Core monitoring service
+│   └── CredentialSendService.kt         # Network transmission service
+├── models/
+│   └── Credentials.kt               # Data model for captured credentials
+├── network/
+│   └── NetworkManager.kt            # HTTP client and API communication
+└── utils/
+    ├── Constants.kt                 # Application constants and configurations
+    └── ValidationUtils.kt           # Input validation utilities
+```
+
+### Backend Structure
+```text
+backend/
+│
+├── demo_server.py                   # Flask server for credential collection
+├── requirements.txt                 # Python dependencies
+├── .env.txt                        # Environment configuration
+└── stolen_credentials.json          # Data storage (generated at runtime)
+```
+
+### Configuration Files
+```text
+app/src/main/
+│
+├── AndroidManifest.xml             # App permissions and component declarations
+├── res/
+│   ├── xml/
+│   │   ├── accessibility_service_config.xml    # Accessibility service configuration
+│   │   └── network_security_config.xml         # Network security settings
+│   └── layout/
+│       └── phishing_login_overlay.xml          # Phishing UI layout
+└── assets/
+    └── main_login_screen.xml       # Target app UI hierarchy analysis
+```
+
+
 ## 🔒 Security Implementation Details
 
 ### Permission Management
@@ -119,13 +167,25 @@ The phishing overlay demonstrates sophisticated UI replication techniques:
 - **Loading States**: Simulated network delays for authenticity
 - **Dynamic Content**: Time-based greetings and personalized elements
 
-*Screenshots comparing the authentic banking app login screen with the phishing overlay will be included to demonstrate the sophistication of the replication.*
+| Phishing Screen| Real App Screen| Caught Screen|
+|-------|-------|-------|
+| <img src="screenshots/phishing_overlay.jpg" width="200"/> | <img src="screenshots/real_app.jpg" width="200"/> | <img src="screenshots/caught_screen.jpg" width="200"/> |
 
 ## 🔧 Technical Implementation
 
 ### Reverse Engineering Methodology
 
 To create an authentic-looking phishing interface, extensive analysis of the target application was conducted:
+
+### Target Application Analysis
+This framework is specifically configured for Mercantile Bank's Android application:
+- **Package Name**: `com.ideomobile.mercantile`
+- **UI Components**: Custom View ID mapping for automated interaction
+- **Login Flow**: Tailored to the bank's specific authentication process
+
+```kotlin
+private const val TARGET_PACKAGE = "com.ideomobile.mercantile"
+```
 
 #### XML Structure Analysis
 - **Layout Inspection**: Detailed examination of the banking app's UI hierarchy
@@ -152,9 +212,15 @@ This approach demonstrates the importance of proper UI component protection in m
 
 ### Automated Credential Injection
 
-The framework includes sophisticated credential injection capabilities:
+The framework includes sophisticated credential injection capabilities utilizing the Credentials data model:
 
 ```kotlin
+data class Credentials(
+    val id: String,
+    val password: String,
+    val code: String = ""
+)
+
 private fun injectPasswordToRealApp() {
     val passwordNode = passwordNodes[0]
     passwordNode.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
@@ -168,17 +234,51 @@ private fun injectPasswordToRealApp() {
 }
 ```
 
-## 🛡️ Defensive Measures and Countermeasures
+### Network Communication Architecture
 
-### Detection Strategies
-- **Overlay Detection**: Implementation of techniques to identify unauthorized overlays
-- **Accessibility Monitoring**: Detection of potentially malicious accessibility services
-- **Behavioral Analysis**: Monitoring for unusual application interaction patterns
+The system employs a clean separation between data models and network operations:
 
-### Prevention Techniques
-- **Input Validation**: Enhanced validation to detect automated input injection
-- **UI Protection**: Techniques to prevent unauthorized overlay attacks
-- **User Education**: Training users to recognize phishing attempts
+```kotlin
+object NetworkManager {
+    fun sendCredentials(
+        credentials: Credentials,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val json = JSONObject().apply {
+            put("id", credentials.id)
+            put("password", credentials.password)
+            if (credentials.code.isNotEmpty()) {
+                put("code", credentials.code)
+            }
+        }
+        // HTTP transmission logic
+    }
+}
+```
+
+### Input Validation Framework
+
+Centralized validation utilities ensure data integrity:
+
+```kotlin
+object ValidationUtils {
+    fun validateAndMarkErrors(
+        idField: EditText,
+        passField: EditText,
+        codeField: EditText
+    ): Boolean {
+        var allOk = true
+        
+        if (!Constants.ID_REGEX.matches(idField.text)) {
+            idField.error = "ת״ז חייבת להכיל 9 ספרות"
+            allOk = false
+        }
+        
+        return allOk
+    }
+}
+```
 
 ## 📊 Data Collection and Analysis
 
@@ -190,8 +290,24 @@ Captured data includes:
 - Metadata (timestamps, IP addresses, user agents)
 
 ### Administrative Dashboard
-The backend provides comprehensive data analysis capabilities:
+The backend provides comprehensive data analysis capabilities with a secure web interface:
 
+### 🔑 Password Protection
+<p align="center">
+  <img src="screenshots/admin_login.png" alt="Password Protection" width="900">
+</p>  
+
+### 📈 Data Visualization
+<p align="center">
+  <img src="screenshots/admin_dashboard.png" alt="Password Protection" width="900">
+</p>  
+
+### 💾 Local Storage
+<p align="center">
+  <img src="screenshots/json_file.png" alt="Local Storage" width="400">
+</p>
+
+#### Access Control Implementation
 ```python
 @app.route("/admin/view", methods=["GET", "POST"])
 def admin_view():
@@ -201,6 +317,12 @@ def admin_view():
     stolen_data = load_stolen_data()
     # Secure data presentation logic
 ```
+
+#### Data Persistence and Security
+- **🔐 Password-protected access**: SHA256 hashed authentication preventing unauthorized access
+- **📊 Real-time dashboard**: Live visualization of captured credentials with timestamps and metadata
+- **💾 Local JSON storage**: Secure file-based persistence with `stolen_credentials.json` for research analysis
+- **Export capabilities**: Structured data export for further security research and analysis
 
 ## 🔐 Ethical Considerations and Responsible Disclosure
 
@@ -221,6 +343,7 @@ def admin_view():
 - Development environment with Android SDK
 - Flask server environment for backend components
 - Network connectivity for credential transmission testing
+- Target application: Mercantile Bank app (com.ideomobile.mercantile) installed on test device
 
 ### Configuration Steps
 
@@ -230,13 +353,19 @@ def admin_view():
    python demo_server.py
    ```
 
-2. **Android Application**
-    - Enable "Install from Unknown Sources"
-    - Install the APK package
-    - Grant required permissions (Overlay, Accessibility)
-    - Configure network settings for server communication
+2. **Environment Configuration**
+   Configure server settings in `.env.txt`:
+   ```
+   SERVER_PORT=5000
+   ```
 
-3. **Permission Configuration**
+3. **Android Application**
+   - Enable "Install from Unknown Sources"
+   - Install the APK package
+   - Grant required permissions (Overlay, Accessibility)
+   - Configure network settings for server communication
+
+4. **Permission Configuration**
    ```kotlin
    // Request overlay permission
    if (!Settings.canDrawOverlays(this)) {
@@ -271,18 +400,6 @@ This framework demonstrates several critical vulnerabilities in mobile applicati
 - **Overlay Detection**: Implementation of system-level overlay detection mechanisms
 - **User Education**: Comprehensive training on recognizing social engineering attacks
 
-## 🎓 Educational Applications
-
-### Security Awareness Training
-- **Demonstration Tool**: Hands-on experience with real phishing techniques
-- **Risk Assessment**: Understanding of actual threats in mobile banking
-- **Defensive Strategy Development**: Creation of effective countermeasures
-
-### Research Applications
-- **Attack Vector Analysis**: Systematic study of mobile phishing techniques
-- **User Behavior Research**: Analysis of human factors in security breaches
-- **Defense Mechanism Testing**: Evaluation of security control effectiveness
-
 ## 📋 Technical Specifications
 
 ### Development Environment
@@ -292,33 +409,7 @@ This framework demonstrates several critical vulnerabilities in mobile applicati
 - **Network**: HTTP communication with security configuration
 
 ### Performance Characteristics
-- **Response Time**: Sub-second overlay deployment
-- **Resource Usage**: Minimal battery and memory impact
 - **Compatibility**: Android 6.0+ devices with accessibility support
-
-## 🔮 Future Enhancements
-
-### Advanced Techniques
-- **Machine Learning Integration**: Behavioral analysis for improved deception
-- **Dynamic Content Generation**: Real-time adaptation to user behavior
-- **Multi-Factor Attack Vectors**: Integration of SMS and email phishing components
-
-### Defensive Research
-- **Detection Algorithm Development**: Creation of advanced phishing detection systems
-- **User Interface Protection**: Development of overlay-resistant UI components
-- **Security Training Modules**: Interactive educational content for end users
-
-## 📚 References and Resources
-
-### Technical Documentation
-- Android Accessibility Service Developer Guide
-- Mobile Application Security Testing Guide (MASTG)
-- OWASP Mobile Security Project
-
-### Security Research
-- Academic papers on mobile phishing techniques
-- Industry reports on banking application security
-- Vulnerability disclosure databases and case studies
 
 ---
 
