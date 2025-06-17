@@ -220,12 +220,8 @@ def admin_view():
         <hr style="border-color: #444; margin-top: 30px;">
         <div style="text-align: center; margin: 20px 0;">
             <button onclick="window.location.href='/admin/reset'" 
-                    style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin: 0 10px;">
+                    style="padding: 10px 20px; background: #dc3545; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px;">
                 🗑️ Reset Campaign
-            </button>
-            <button onclick="window.location.href='/admin/export'" 
-                    style="padding: 10px 20px; background: #28a745; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 14px; margin: 0 10px;">
-                📥 Export Data
             </button>
         </div>
         <div style="color: #666; text-align: center; margin-top: 20px;">
@@ -236,28 +232,6 @@ def admin_view():
     """
 
     return html_response
-
-
-@app.route("/admin/export", methods=["POST"])
-def admin_export():
-    """
-    Export stolen data as JSON (requires password)
-    """
-    data = request.get_json(silent=True)
-    if not data:
-        return jsonify({"error": "JSON body required"}), 400
-
-    password = data.get('password', '')
-
-    if not verify_admin_password(password):
-        return jsonify({"error": "Invalid password"}), 401
-
-    stolen_data = load_stolen_data()
-
-    return jsonify({
-        "total_records": len(stolen_data),
-        "data": stolen_data
-    }), 200
 
 
 @app.route("/admin/reset", methods=["GET", "POST"])
