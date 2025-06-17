@@ -1,8 +1,8 @@
 # 🎯 Phishing Framework - Advanced Mobile Security Research Project
 
-|                                                           |                                                   |                                                        |
-|-----------------------------------------------------------|---------------------------------------------------|--------------------------------------------------------|
-| <img src="screenshots/phishing_overlay.jpg" width="300"/> | <img src="screenshots/real_app.jpg" width="300"/> | <img src="screenshots/caught_screen.jpg" width="300"/> |
+| Phishing Screen| Real App Screen| Caught Screen|
+|-------|-------|-------|
+| <img src="screenshots/phishing_overlay.jpg" width="200"/> | <img src="screenshots/real_app.jpg" width="200"/> | <img src="screenshots/caught_screen.jpg" width="200"/> |
 
 *A comprehensive mobile security research framework demonstrating advanced phishing techniques and defensive measures for Android applications.*
 
