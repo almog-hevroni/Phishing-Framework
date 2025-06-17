@@ -27,7 +27,7 @@ This project presents a sophisticated phishing framework designed to demonstrate
 ## 🏗️ System Architecture
 
 ### Core Components
-
+tgy
 #### 1. PhishingAccessibilityService
 The heart of the surveillance system, this component monitors application state changes and triggers overlay attacks when the target banking application is detected.
 
