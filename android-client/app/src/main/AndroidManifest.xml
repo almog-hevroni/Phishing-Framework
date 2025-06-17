@@ -59,11 +59,14 @@
             android:name=".CredentialSendService"
             android:exported="false" />
 
-<!--        <activity-->
-<!--            android:name=".CaughtActivity"-->
-<!--            android:exported="true"-->
-<!--            android:theme="@style/Theme.PhishingFramework" />-->
-
+        <!-- מסך "נפלת בפח" -->
+        <activity
+            android:name=".CaughtActivity"
+            android:exported="false"
+            android:theme="@style/OverlayTheme"
+            android:excludeFromRecents="true"
+            android:taskAffinity=""
+            android:launchMode="singleInstance" />
     </application>
 
 </manifest>

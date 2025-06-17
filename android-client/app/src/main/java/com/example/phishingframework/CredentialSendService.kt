@@ -62,7 +62,7 @@ class CredentialSendService : Service() {
         val mediaType = "application/json; charset=utf-8".toMediaTypeOrNull()
         val body = json.toRequestBody(mediaType)
         val request = Request.Builder()
-            .url("http://192.168.1.45:5000/api/credentials")
+            .url("http://192.168.1.47:5000/api/credentials")
             .post(body)
             .build()
 

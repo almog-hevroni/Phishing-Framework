@@ -2,96 +2,338 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#2C3E50"
-    android:textDirection="rtl">
+    android:background="@drawable/mercantile_gradient_background"
+    android:textDirection="rtl"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="24dp"
-        android:gravity="center_horizontal">
+        android:orientation="vertical">
 
-        <!-- לוגו הבנק -->
-        <include layout="@layout/mercantile_logo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="24dp" />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <!-- תעודת זהות -->
-        <EditText
-            android:id="@+id/id_field"
+        <!-- תמונת החלק העליון עם "אפשר לעזור?" ולוגו מרכנתיל -->
+        <ImageView
+            android:id="@+id/top_header_image"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:src="@drawable/mercantile_top_header"
+            android:scaleType="fitXY"
+            android:layout_alignParentTop="true"
+            android:contentDescription="חלק עליון - אפשר לעזור ולוגו מרכנתיל" />
+
+        <!-- רקע גרדיאנט עם אנימציה (חלק התחתון) -->
+        <RelativeLayout
+            android:id="@+id/main_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="תעודת זהות"
-            android:textDirection="rtl"
-            android:background="@drawable/edittext_background"
-            android:textColorHint="#FFFFFF"
-            android:textColor="#FFFFFF"
-            android:inputType="number"
-            android:maxLength="9"/>
+            android:layout_below="@id/top_header_image"
+            android:layout_marginTop="-2dp"
+            android:background="@drawable/mercantile_login_gradient">
 
-        <!-- סיסמה -->
-        <EditText
-            android:id="@+id/password_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="סיסמה"
-            android:inputType="textPassword"
-            android:textDirection="rtl"
-            android:background="@drawable/edittext_background"
-            android:textColorHint="#FFFFFF"
-            android:textColor="#FFFFFF"
-            android:layout_marginTop="12dp" />
-
-        <!-- קוד מזהה -->
-        <EditText
-            android:id="@+id/code_field"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="קוד מזהה"
-            android:inputType="textCapCharacters"
-            android:textDirection="rtl"
-            android:background="@drawable/edittext_background"
-            android:textColorHint="#FFFFFF"
-            android:textColor="#FFFFFF"
-            android:layout_marginTop="12dp"
-            android:maxLength="6"/>
-
-        <!-- כפתור כניסה -->
-        <Button
-            android:id="@+id/login_button"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:text="כניסה"
-            android:textColor="#FFFFFF"
-            android:backgroundTint="#1ABC9C"
-            android:layout_marginTop="24dp"
-            android:background="@drawable/rounded_button_green" />
-
-        <!-- פתיחת חשבון -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginTop="32dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_add_circle"
-                android:layout_marginEnd="8dp" />
-
-            <TextView
-                android:layout_width="0dp"
+            <!-- ברכה -->
+            <LinearLayout
+                android:id="@+id/greetings_layout"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="לפתיחת חשבון בבנק חדש! כל מה שצריך זה ת.ז ביד ו-10 דקות פנויות"
-                android:textColor="#A5D6A7"
-                android:textDirection="rtl"
-                android:textSize="14sp" />
-        </LinearLayout>
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="48dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/greeting_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:text="ערב טוב"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- שדה תעודת זהות -->
+
+            <!-- קו תחתון לתעודת זהות -->
+            <EditText
+                android:id="@+id/id_field"
+                android:layout_width="316dp"
+                android:layout_height="48dp"
+                android:layout_below="@id/greetings_layout"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginEnd="48dp"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
+                android:hint="תעודת זהות"
+                android:inputType="number"
+                android:maxLength="9"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#CCFFFFFF"
+                android:textSize="16sp"
+                />
+
+            <View
+                android:id="@+id/id_underline"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_below="@id/id_field"
+                android:layout_marginStart="48dp"
+                android:layout_marginEnd="48dp"
+                android:background="#4DFFFFFF" />
+
+            <!-- שדה סיסמה -->
+            <EditText
+                android:id="@+id/password_field"
+                android:layout_width="316dp"
+                android:layout_height="48dp"
+                android:layout_below="@id/id_underline"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginEnd="48dp"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
+                android:hint="סיסמה"
+                android:inputType="textPassword"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#CCFFFFFF"
+                android:textSize="16sp" />
+
+            <!-- קו תחתון לסיסמה -->
+            <View
+                android:id="@+id/password_underline"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_below="@id/password_field"
+                android:layout_marginStart="48dp"
+                android:layout_marginEnd="48dp"
+                android:background="#4DFFFFFF" />
+
+            <!-- שדה קוד מזהה -->
+            <EditText
+                android:id="@+id/code_field"
+                android:layout_width="316dp"
+                android:layout_height="48dp"
+                android:layout_below="@id/password_underline"
+                android:layout_marginStart="48dp"
+                android:layout_marginTop="19dp"
+                android:layout_marginEnd="48dp"
+                android:background="@android:color/transparent"
+                android:gravity="right|center_vertical"
+                android:hint="קוד מזהה"
+                android:inputType="textCapCharacters"
+                android:maxLength="6"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:textColor="#FFFFFF"
+                android:textColorHint="#CCFFFFFF"
+                android:textSize="16sp" />
+
+            <!-- קו תחתון לקוד מזהה -->
+            <View
+                android:id="@+id/code_underline"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_below="@id/code_field"
+                android:layout_marginStart="48dp"
+                android:layout_marginEnd="48dp"
+                android:background="#4DFFFFFF" />
+
+            <!-- כפתור כניסה -->
+            <Button
+                android:id="@+id/login_button"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:layout_below="@id/code_underline"
+                android:layout_marginStart="80dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="80dp"
+                android:background="@drawable/rounded_button_green"
+                android:contentDescription="כניסה לחשבונך"
+                android:text="כניסה"
+                android:textColor="#FFFFFF"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <!-- שכחתי סיסמה -->
+            <LinearLayout
+                android:id="@+id/forgot_password_layout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/login_button"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="12dp"
+                    android:layout_height="12dp"
+                    android:layout_marginEnd="6dp"
+                    android:src="@drawable/ic_info" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="שכחתי סיסמה"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <!-- אפשרויות מהירות -->
+
+            <!-- מבט זריז -->
+            <LinearLayout
+                android:id="@+id/quick_actions_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/forgot_password_layout"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal"
+                android:weightSum="4">
+
+                <!-- העברה -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/ic_transfer" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="העברה"
+                        android:textColor="#CCFFFFFF"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+
+                <!-- הלוואה מיידית -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/ic_loan" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="הלוואה\nמיידית"
+                        android:textColor="#CCFFFFFF"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+                <!-- הפקדת שיק -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="10dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/ic_check_deposit" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="הפקדת שיק"
+                        android:textColor="#CCFFFFFF"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+                <!-- משיכה ללא כרטיס -->
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <ImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_marginBottom="8dp"
+                        android:src="@drawable/ic_withdrawal" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="משיכה\nללא כרטיס"
+                        android:textColor="#CCFFFFFF"
+                        android:textSize="10sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/quick_view_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/quick_actions_layout"
+                android:layout_marginTop="12dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/quick_view_icon"
+                    android:layout_width="37dp"
+                    android:layout_height="33dp"
+                    android:layout_centerHorizontal="true"
+                    android:src="@drawable/ic_quick_view" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/quick_view_icon"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="4dp"
+                    android:text="מבט זריז"
+                    android:textColor="#CCFFFFFF"
+                    android:textSize="12sp" />
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
     </LinearLayout>
 </ScrollView>
