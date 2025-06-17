@@ -1,5 +1,9 @@
 # 🎯 Phishing Framework - Advanced Mobile Security Research Project
 
+<p align="center">
+  <img src="screenshots/app_logo.png" alt="SwapStyle Logo" width="150">
+</p>
+
 *A comprehensive mobile security research framework demonstrating advanced phishing techniques and defensive measures for Android applications.*
 
 ## 📋 Project Overview
