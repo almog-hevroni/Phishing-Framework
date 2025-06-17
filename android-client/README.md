@@ -168,17 +168,17 @@ private fun injectPasswordToRealApp() {
 ### Administrative Dashboard
 The backend provides comprehensive data analysis capabilities with a secure web interface:
 
-### Password Protection
+### 🔑 Password Protection
 <p align="center">
   <img src="screenshots/admin_login.png" alt="Password Protection" width="900">
 </p>  
 
-### Data Visualization
+### 📈 Data Visualization
 <p align="center">
   <img src="screenshots/admin_dashboard.png" alt="Password Protection" width="900">
 </p>  
 
-### Local Storage
+### 💾 Local Storage
 <p align="center">
   <img src="screenshots/json_file.png" alt="Local Storage" width="400">
 </p>
