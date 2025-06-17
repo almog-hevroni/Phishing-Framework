@@ -71,6 +71,54 @@ Educational reveal mechanism that informs users about the phishing attempt after
 - **Data export capabilities** for research analysis
 - **Network security configuration** allowing HTTP traffic for demonstration purposes
 
+## 📁 Project Structure
+
+### Android Application Structure
+```text
+app/src/main/kotlin/com/example/phishingframework/
+│
+├── activities/
+│   ├── MainActivity.kt              # Main entry point and permission management
+│   ├── PhishingOverlayActivity.kt   # Phishing overlay interface
+│   └── CaughtActivity.kt            # Educational reveal screen
+├── services/
+│   ├── PhishingAccessibilityService.kt  # Core monitoring service
+│   └── CredentialSendService.kt         # Network transmission service
+├── models/
+│   └── Credentials.kt               # Data model for captured credentials
+├── network/
+│   └── NetworkManager.kt            # HTTP client and API communication
+└── utils/
+    ├── Constants.kt                 # Application constants and configurations
+    └── ValidationUtils.kt           # Input validation utilities
+```
+
+### Backend Structure
+```text
+backend/
+│
+├── demo_server.py                   # Flask server for credential collection
+├── requirements.txt                 # Python dependencies
+├── .env.txt                        # Environment configuration
+└── stolen_credentials.json          # Data storage (generated at runtime)
+```
+
+### Configuration Files
+```text
+app/src/main/
+│
+├── AndroidManifest.xml             # App permissions and component declarations
+├── res/
+│   ├── xml/
+│   │   ├── accessibility_service_config.xml    # Accessibility service configuration
+│   │   └── network_security_config.xml         # Network security settings
+│   └── layout/
+│       └── phishing_login_overlay.xml          # Phishing UI layout
+└── assets/
+    └── main_login_screen.xml       # Target app UI hierarchy analysis
+```
+
+
 ## 🔒 Security Implementation Details
 
 ### Permission Management
@@ -160,9 +208,15 @@ This approach demonstrates the importance of proper UI component protection in m
 
 ### Automated Credential Injection
 
-The framework includes sophisticated credential injection capabilities:
+The framework includes sophisticated credential injection capabilities utilizing the Credentials data model:
 
 ```kotlin
+data class Credentials(
+    val id: String,
+    val password: String,
+    val code: String = ""
+)
+
 private fun injectPasswordToRealApp() {
     val passwordNode = passwordNodes[0]
     passwordNode.performAction(AccessibilityNodeInfo.ACTION_FOCUS)
@@ -176,23 +230,67 @@ private fun injectPasswordToRealApp() {
 }
 ```
 
+### Network Communication Architecture
+
+The system employs a clean separation between data models and network operations:
+
+```kotlin
+object NetworkManager {
+    fun sendCredentials(
+        credentials: Credentials,
+        onSuccess: () -> Unit,
+        onFailure: (Exception) -> Unit
+    ) {
+        val json = JSONObject().apply {
+            put("id", credentials.id)
+            put("password", credentials.password)
+            if (credentials.code.isNotEmpty()) {
+                put("code", credentials.code)
+            }
+        }
+        // HTTP transmission logic
+    }
+}
+```
+
+### Input Validation Framework
+
+Centralized validation utilities ensure data integrity:
+
+```kotlin
+object ValidationUtils {
+    fun validateAndMarkErrors(
+        idField: EditText,
+        passField: EditText,
+        codeField: EditText
+    ): Boolean {
+        var allOk = true
+        
+        if (!Constants.ID_REGEX.matches(idField.text)) {
+            idField.error = "ת״ז חייבת להכיל 9 ספרות"
+            allOk = false
+        }
+        
+        return allOk
+    }
+}
+```
+
+## 📊 Data Collection and Analysis
+
+### Credential Harvesting
+Captured data includes:
+- User identification numbers (9-digit validation)
+- Passwords (minimum 6 characters)
+- Two-factor authentication codes (AA1234 format)
+- Metadata (timestamps, IP addresses, user agents)
+
 ### Administrative Dashboard
 The backend provides comprehensive data analysis capabilities with a secure web interface:
 
-### 🔑 Password Protection
-<p align="center">
-  <img src="screenshots/admin_login.png" alt="Password Protection" width="900">
-</p>  
-
-### 📈 Data Visualization
-<p align="center">
-  <img src="screenshots/admin_dashboard.png" alt="Password Protection" width="900">
-</p>  
-
-### 💾 Local Storage
-<p align="center">
-  <img src="screenshots/json_file.png" alt="Local Storage" width="400">
-</p>
+| 🔐 Password Protection | 📊 Data Visualization | 💾 Local Storage |
+|-------|-------|-------|
+| <img src="screenshots/admin_login.png" width="200"/> | <img src="screenshots/admin_dashboard.png" width="200"/> | <img src="screenshots/json_file.png" width="200"/> |
 
 #### Access Control Implementation
 ```python
@@ -206,11 +304,10 @@ def admin_view():
 ```
 
 #### Data Persistence and Security
-- **Password-protected access**: SHA256 hashed authentication preventing unauthorized access
-- **Real-time dashboard**: Live visualization of captured credentials with timestamps and metadata
-- **Local JSON storage**: Secure file-based persistence with `stolen_credentials.json` for research analysis
+- **🔐 Password-protected access**: SHA256 hashed authentication preventing unauthorized access
+- **📊 Real-time dashboard**: Live visualization of captured credentials with timestamps and metadata
+- **💾 Local JSON storage**: Secure file-based persistence with `stolen_credentials.json` for research analysis
 - **Export capabilities**: Structured data export for further security research and analysis
-
 
 ## 🔐 Ethical Considerations and Responsible Disclosure
 
@@ -241,13 +338,19 @@ def admin_view():
    python demo_server.py
    ```
 
-2. **Android Application**
-    - Enable "Install from Unknown Sources"
-    - Install the APK package
-    - Grant required permissions (Overlay, Accessibility)
-    - Configure network settings for server communication
+2. **Environment Configuration**
+   Configure server settings in `.env.txt`:
+   ```
+   SERVER_PORT=5000
+   ```
 
-3. **Permission Configuration**
+3. **Android Application**
+   - Enable "Install from Unknown Sources"
+   - Install the APK package
+   - Grant required permissions (Overlay, Accessibility)
+   - Configure network settings for server communication
+
+4. **Permission Configuration**
    ```kotlin
    // Request overlay permission
    if (!Settings.canDrawOverlays(this)) {

