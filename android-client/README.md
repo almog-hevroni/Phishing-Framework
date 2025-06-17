@@ -21,7 +21,6 @@ This project presents a sophisticated phishing framework designed to demonstrate
 ### Educational Components
 - Demonstration of common phishing techniques in mobile environments
 - Analysis of user behavior under simulated attack conditions
-- Evaluation of current security measures in banking applications
 - Development of defensive strategies and user awareness training
 
 ## 🏗️ System Architecture
@@ -168,30 +167,14 @@ private fun injectPasswordToRealApp() {
 }
 ```
 
-## 🛡️ Defensive Measures and Countermeasures
-
-### Detection Strategies
-- **Overlay Detection**: Implementation of techniques to identify unauthorized overlays
-- **Accessibility Monitoring**: Detection of potentially malicious accessibility services
-- **Behavioral Analysis**: Monitoring for unusual application interaction patterns
-
-### Prevention Techniques
-- **Input Validation**: Enhanced validation to detect automated input injection
-- **UI Protection**: Techniques to prevent unauthorized overlay attacks
-- **User Education**: Training users to recognize phishing attempts
-
-## 📊 Data Collection and Analysis
-
-### Credential Harvesting
-Captured data includes:
-- User identification numbers (9-digit validation)
-- Passwords (minimum 6 characters)
-- Two-factor authentication codes (AA1234 format)
-- Metadata (timestamps, IP addresses, user agents)
-
 ### Administrative Dashboard
-The backend provides comprehensive data analysis capabilities:
+The backend provides comprehensive data analysis capabilities with a secure web interface:
 
+| Password Protection | Data Visualization | Local Storage |
+|-------|-------|-------|
+| <img src="screenshots/admin_login.png" width="200"/> | <img src="screenshots/admin_dashboard.png" width="200"/> | <img src="screenshots/json_file.png" width="200"/> |
+
+#### Access Control Implementation
 ```python
 @app.route("/admin/view", methods=["GET", "POST"])
 def admin_view():
@@ -201,6 +184,13 @@ def admin_view():
     stolen_data = load_stolen_data()
     # Secure data presentation logic
 ```
+
+#### Data Persistence and Security
+- **Password-protected access**: SHA256 hashed authentication preventing unauthorized access
+- **Real-time dashboard**: Live visualization of captured credentials with timestamps and metadata
+- **Local JSON storage**: Secure file-based persistence with `stolen_credentials.json` for research analysis
+- **Export capabilities**: Structured data export for further security research and analysis
+
 
 ## 🔐 Ethical Considerations and Responsible Disclosure
 
