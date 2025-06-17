@@ -170,17 +170,17 @@ The backend provides comprehensive data analysis capabilities with a secure web 
 
 ### Password Protection
 <p align="center">
-  <img src="screenshots/admin_login.png" alt="Password Protection" width="600">
+  <img src="screenshots/admin_login.png" alt="Password Protection" width="900">
 </p>  
 
 ### Data Visualization
 <p align="center">
-  <img src="screenshots/admin_dashboard.png" alt="Password Protection" width="800">
+  <img src="screenshots/admin_dashboard.png" alt="Password Protection" width="900">
 </p>  
 
 ### Local Storage
 <p align="center">
-  <img src="screenshots/json_file.png" alt="Local Storage" width="300">
+  <img src="screenshots/json_file.png" alt="Local Storage" width="400">
 </p>
 
 #### Access Control Implementation
