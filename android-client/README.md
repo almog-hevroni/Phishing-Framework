@@ -175,7 +175,7 @@ The backend provides comprehensive data analysis capabilities with a secure web 
 
 ### Data Visualization
 <p align="center">
-  <img src="screenshots/admin_dashboard.png" alt="Password Protection" width="600">
+  <img src="screenshots/admin_dashboard.png" alt="Password Protection" width="800">
 </p>  
 
 ### Local Storage
