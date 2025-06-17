@@ -5,6 +5,7 @@
 ## 📋 Project Overview
 
 This project presents a sophisticated phishing framework designed to demonstrate vulnerabilities in mobile banking applications and educate users about social engineering attacks. The system employs multiple attack vectors including overlay attacks, accessibility service exploitation, and credential harvesting to showcase real-world security threats.
+*Specifically designed to target Mercantile Bank's mobile application (com.ideomobile.mercantile) for controlled security research.*
 
 ## 🎯 Security Research Objectives
 
@@ -124,6 +125,16 @@ The phishing overlay demonstrates sophisticated UI replication techniques:
 
 To create an authentic-looking phishing interface, extensive analysis of the target application was conducted:
 
+### Target Application Analysis
+This framework is specifically configured for Mercantile Bank's Android application:
+- **Package Name**: `com.ideomobile.mercantile`
+- **UI Components**: Custom View ID mapping for automated interaction
+- **Login Flow**: Tailored to the bank's specific authentication process
+
+```kotlin
+private const val TARGET_PACKAGE = "com.ideomobile.mercantile"
+```
+
 #### XML Structure Analysis
 - **Layout Inspection**: Detailed examination of the banking app's UI hierarchy
 - **Resource Extraction**: Identification of drawable resources, color schemes, and dimensions
@@ -220,6 +231,7 @@ def admin_view():
 - Development environment with Android SDK
 - Flask server environment for backend components
 - Network connectivity for credential transmission testing
+- Target application: Mercantile Bank app (com.ideomobile.mercantile) installed on test device
 
 ### Configuration Steps
 
