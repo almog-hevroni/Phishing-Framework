@@ -11,6 +11,17 @@
 This project presents a sophisticated phishing framework designed to demonstrate vulnerabilities in mobile banking applications and educate users about social engineering attacks. The system employs multiple attack vectors including overlay attacks, accessibility service exploitation, and credential harvesting to showcase real-world security threats.
 *Specifically designed to target Mercantile Bank's mobile application (com.ideomobile.mercantile) for controlled security research.*
 
+## 🎬 System Demonstration
+
+📹 **[Download Full Demo Video (MP4)]
+(https://github.com/almog-hevroni/Phishing-Framework/releases/download/demo-video/Phishing.Framework.Video.mp4)**
+
+*Complete attack flow demonstration showing:*
+- Target application detection
+- Phishing overlay deployment  
+- Credential capture process
+- Administrative dashboard review
+
 ## 🎯 Security Research Objectives
 
 ### Attack Surface Analysis
