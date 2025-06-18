@@ -22,52 +22,47 @@ class CaughtActivity : Activity() {
 
         Log.i("CaughtActivity", "נפלת בפח - המסך מוצג")
 
-        // רקע אפור כהה עם שקיפות
         window.setBackgroundDrawable(ColorDrawable(Color.argb(200, 128, 128, 128)))
 
-        // קישור ל־layout שמציג את ההודעה
         setContentView(R.layout.caught_activity)
 
         val messageText = findViewById<TextView>(R.id.caught_message)
 
-        // יצירת אנימציית הבהוב
+        // Create blinking animation
         val blinkAnimation = AlphaAnimation(0.0f, 1.0f).apply {
             duration = 500 // חצי שנייה
             repeatMode = Animation.REVERSE
             repeatCount = Animation.INFINITE
         }
 
-        // התחלת האנימציה
         messageText.startAnimation(blinkAnimation)
 
-        // אחרי 3 שניות - סגירת האפליקציה וחזרה למסך הבית
         handler.postDelayed({
             Log.i("CaughtActivity", "סוגר את האפליקציה וחוזר למסך הבית")
 
-            // עצירת האנימציה
             messageText.clearAnimation()
 
-            // חזרה למסך הבית
+            // Return to home screen
             val homeIntent = Intent(Intent.ACTION_MAIN).apply {
                 addCategory(Intent.CATEGORY_HOME)
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK
             }
             startActivity(homeIntent)
 
-            // סגירת כל ה-Activities של האפליקציה
+            // Close all Activities of the application
             finishAffinity()
 
-            // יציאה מהתהליך (לאחר חזרה למסך הבית)
+            // Exit the process (after returning to home screen)
             handler.postDelayed({
                 System.exit(0)
-            }, 500) // חצי שנייה נוספת לוודא שמסך הבית נטען
+            }, 500)
 
-        }, 3000) // 3 שניות
+        }, 3000)
     }
 
     override fun onBackPressed() {
-        // מונעים סגירה בלחיצה על Back
-        // המשתמש חייב לראות את ההודעה
+        // Prevent closing by pressing Back
+        // User must see the message
     }
 
     override fun onDestroy() {

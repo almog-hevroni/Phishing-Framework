@@ -15,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- תמונת החלק העליון עם "אפשר לעזור?" ולוגו מרכנתיל -->
         <ImageView
             android:id="@+id/top_header_image"
             android:layout_width="match_parent"
@@ -25,7 +24,6 @@
             android:layout_alignParentTop="true"
             android:contentDescription="חלק עליון - אפשר לעזור ולוגו מרכנתיל" />
 
-        <!-- רקע גרדיאנט עם אנימציה (חלק התחתון) -->
         <RelativeLayout
             android:id="@+id/main_content"
             android:layout_width="match_parent"
@@ -34,7 +32,6 @@
             android:layout_marginTop="-2dp"
             android:background="@drawable/mercantile_login_gradient">
 
-            <!-- ברכה -->
             <LinearLayout
                 android:id="@+id/greetings_layout"
                 android:layout_width="match_parent"
@@ -57,9 +54,6 @@
 
             </LinearLayout>
 
-            <!-- שדה תעודת זהות -->
-
-            <!-- קו תחתון לתעודת זהות -->
             <EditText
                 android:id="@+id/id_field"
                 android:layout_width="316dp"
@@ -89,7 +83,6 @@
                 android:layout_marginEnd="48dp"
                 android:background="#4DFFFFFF" />
 
-            <!-- שדה סיסמה -->
             <EditText
                 android:id="@+id/password_field"
                 android:layout_width="316dp"
@@ -108,7 +101,6 @@
                 android:textColorHint="#CCFFFFFF"
                 android:textSize="16sp" />
 
-            <!-- קו תחתון לסיסמה -->
             <View
                 android:id="@+id/password_underline"
                 android:layout_width="match_parent"
@@ -118,7 +110,6 @@
                 android:layout_marginEnd="48dp"
                 android:background="#4DFFFFFF" />
 
-            <!-- שדה קוד מזהה -->
             <EditText
                 android:id="@+id/code_field"
                 android:layout_width="316dp"
@@ -138,7 +129,6 @@
                 android:textColorHint="#CCFFFFFF"
                 android:textSize="16sp" />
 
-            <!-- קו תחתון לקוד מזהה -->
             <View
                 android:id="@+id/code_underline"
                 android:layout_width="match_parent"
@@ -148,7 +138,6 @@
                 android:layout_marginEnd="48dp"
                 android:background="#4DFFFFFF" />
 
-            <!-- כפתור כניסה -->
             <Button
                 android:id="@+id/login_button"
                 android:layout_width="match_parent"
@@ -164,7 +153,6 @@
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <!-- שכחתי סיסמה -->
             <LinearLayout
                 android:id="@+id/forgot_password_layout"
                 android:layout_width="wrap_content"
@@ -190,9 +178,6 @@
 
             </LinearLayout>
 
-            <!-- אפשרויות מהירות -->
-
-            <!-- מבט זריז -->
             <LinearLayout
                 android:id="@+id/quick_actions_layout"
                 android:layout_width="match_parent"
@@ -202,7 +187,6 @@
                 android:orientation="horizontal"
                 android:weightSum="4">
 
-                <!-- העברה -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -227,7 +211,6 @@
 
                 </LinearLayout>
 
-                <!-- הלוואה מיידית -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -251,7 +234,7 @@
                         android:textSize="10sp" />
 
                 </LinearLayout>
-                <!-- הפקדת שיק -->
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -276,7 +259,6 @@
 
                 </LinearLayout>
 
-                <!-- משיכה ללא כרטיס -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

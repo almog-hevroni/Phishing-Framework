@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  קובץ תצורת שירות הנגישות:
-  - תיאור השירות שיוצג במסך הגדרות הנגישות (@string/accessibility_service_description)
-  - אירועי נגישות: שינוי מצב חלון, לחיצה ושינוי פוקוס ב-View (typeWindowStateChanged|typeViewClicked|typeViewFocused)
-  - סוג המשוב: feedbackGeneric
-  - השהיית אירועים: notificationTimeout = 100ms
-  - יכולת קריאת תכולת החלון: canRetrieveWindowContent = true
-  - בקשת סינון KeyEvents: canRequestFilterKeyEvents = true
-  - דגלי נגישות: flagRequestFilterKeyEvents | flagDefault
+  Accessibility service configuration file:
+  - Service description to be displayed in accessibility settings screen (@string/accessibility_service_description)
+  - Accessibility events: window state change, click and focus change in View (typeWindowStateChanged|typeViewClicked|typeViewFocused)
+  - Feedback type: feedbackGeneric
+  - Event delay: notificationTimeout = 100ms
+  - Ability to read window content: canRetrieveWindowContent = true
+  - Request KeyEvents filtering: canRequestFilterKeyEvents = true
+  - Accessibility flags: flagRequestFilterKeyEvents | flagDefault
 -->
 <accessibility-service
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -20,9 +20,9 @@
     android:accessibilityFlags="flagRequestFilterKeyEvents|flagDefault" />
 
     <!--
-      תהליך הרישום בשירות הנגישות:
-      1. כשהמשתמש נכנס להגדרות → נגישות, הוא יראה את תיאור השירות שכתבת ב־android:description.
-      2. לאחר הפעלת השירות, מערכת האנדרואיד נותנת לכם callbacks של onAccessibilityEvent() רק עבור האירועים שציינתם.
-      3. אתם יכולים לגשת למבנה החלון (getRootInActiveWindow()) ולבצע לוגיקה כמו זיהוי פתיחת האפליקציה, הצגת overlay ועוד.
-      4. אם ביקשתם סינון KeyEvents, האירועים יגיעו גם ל־onKeyEvent() לפני האפליקציה, לפי דגלי ה־flags.
-    -->
+     Accessibility service registration process:
+     1. When user enters settings → accessibility, they will see the service description you wrote in android:description.
+     2. After activating the service, Android system gives you onAccessibilityEvent() callbacks only for the events you specified.
+     3. You can access the window structure (getRootInActiveWindow()) and perform logic like detecting application opening, showing overlay etc.
+     4. If you requested KeyEvents filtering, the events will also reach onKeyEvent() before the application, according to the flags.
+   -->
